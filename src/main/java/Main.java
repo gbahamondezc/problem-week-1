@@ -8,33 +8,23 @@ import java.util.Stack;
 
 public class Main {
 
-    static boolean areBalanced(String input) {
-
+    private static boolean isBalanced(String input, List<CustomParentheses> parentheses) {
         Map<String, String> map = new HashMap<>();
-        List<CustomParentheses> parentheses = new ArrayList<>();
 
-        /*
-        parentheses.add(new CustomParentheses("[", "]"));
-        parentheses.add(new CustomParentheses("{", "}"));
-        parentheses.add(new CustomParentheses("(", ")"));
-        */
-        parentheses.add(new CustomParentheses("!", "@"));
-        parentheses.add(new CustomParentheses("#", "$"));
-
-        for (CustomParentheses par: parentheses)
+        // Adding possible parentheses to the map
+        for (CustomParentheses par: parentheses) {
             map.put(par.getOpen(), par.getClose());
-
-        List<String> opens = new ArrayList<>(map.keySet());
-        List<String> closes = new ArrayList<>(map.values());
+        }
 
         Stack<String> stack = new Stack<>();
 
         for (int i = 0; i < input.length(); i++) {
             String bracket = Character.toString(input.charAt(i));
-            if (i == 0 && closes.contains(bracket)) {
+            // when the first item its not an open char
+            if (i == 0 && map.get(bracket) == null) {
                 return false;
             }
-            if (opens.contains(bracket)) {
+            if (map.get(bracket) != null) {
                 stack.push(map.get(bracket));
             }
             else if(!stack.isEmpty() && !bracket.equals(stack.pop())) {
@@ -45,8 +35,12 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // System.out.println(areBalanced("[()]"));
-        System.out.println(areBalanced("!@!@!!#$#$@@"));
-        System.out.println(areBalanced("##!@$$!@#$!#@$"));
+        List<CustomParentheses> parentheses = new ArrayList<>();
+
+        parentheses.add(new CustomParentheses("!", "@"));
+        parentheses.add(new CustomParentheses("#", "$"));
+
+        System.out.println(isBalanced("!@!@!!#$#$@@", parentheses));
+        System.out.println(isBalanced("##!@$$!@#$!#@$", parentheses));
     }
 }
